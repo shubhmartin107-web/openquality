@@ -70,6 +70,8 @@ pub async fn suggest_expectations(
 
     Err((
         StatusCode::NOT_IMPLEMENTED,
-        Json(json!({"error": "suggestions not yet implemented - connect to data source and fetch data"})),
+        Json(
+            json!({"error": "suggestions not yet implemented - connect to data source and fetch data"}),
+        ),
     ))
 }

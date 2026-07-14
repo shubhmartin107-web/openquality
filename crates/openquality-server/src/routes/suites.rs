@@ -145,7 +145,9 @@ pub async fn run_suite(
 
     Err((
         StatusCode::NOT_IMPLEMENTED,
-        Json(json!({"error": "suite execution not yet implemented - connect to data source connector"})),
+        Json(
+            json!({"error": "suite execution not yet implemented - connect to data source connector"}),
+        ),
     ))
 }
 

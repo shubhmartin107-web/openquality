@@ -53,19 +53,31 @@ pub struct McpTool {
 pub type McpResult = Result<Value, String>;
 
 pub async fn run_suite(_store: &dyn Store, _workspace_id: Uuid, _params: Value) -> McpResult {
-    Ok(json!({"status": "not_implemented", "message": "Suite execution via MCP requires a connected data source connector"}))
+    Ok(
+        json!({"status": "not_implemented", "message": "Suite execution via MCP requires a connected data source connector"}),
+    )
 }
 
 pub async fn validate_data(_store: &dyn Store, _workspace_id: Uuid, _params: Value) -> McpResult {
-    Ok(json!({"status": "not_implemented", "message": "Data validation via MCP requires a connected data source connector"}))
+    Ok(
+        json!({"status": "not_implemented", "message": "Data validation via MCP requires a connected data source connector"}),
+    )
 }
 
 pub async fn profile_data(_store: &dyn Store, _workspace_id: Uuid, _params: Value) -> McpResult {
-    Ok(json!({"status": "not_implemented", "message": "Profiling via MCP requires a connected data source connector"}))
+    Ok(
+        json!({"status": "not_implemented", "message": "Profiling via MCP requires a connected data source connector"}),
+    )
 }
 
-pub async fn suggest_expectations(_store: &dyn Store, _workspace_id: Uuid, _params: Value) -> McpResult {
-    Ok(json!({"status": "not_implemented", "message": "Suggestion via MCP requires a connected data source connector"}))
+pub async fn suggest_expectations(
+    _store: &dyn Store,
+    _workspace_id: Uuid,
+    _params: Value,
+) -> McpResult {
+    Ok(
+        json!({"status": "not_implemented", "message": "Suggestion via MCP requires a connected data source connector"}),
+    )
 }
 
 pub async fn list_monitors(store: &dyn Store, workspace_id: Uuid, _params: Value) -> McpResult {

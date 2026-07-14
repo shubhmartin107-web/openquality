@@ -196,15 +196,27 @@ async fn main() {
         .merge(routes_integrations)
         .with_state(app_state);
 
-    let cors_origins = std::env::var("OQ_CORS_ORIGINS")
-        .unwrap_or_else(|_| "*".to_string());
+    let cors_origins = std::env::var("OQ_CORS_ORIGINS").unwrap_or_else(|_| "*".to_string());
     let cors = if cors_origins == "*" {
         CorsLayer::permissive()
     } else {
         CorsLayer::new()
-            .allow_origin(cors_origins.split(',').map(|o| o.trim().parse::<axum::http::HeaderValue>().unwrap()).collect::<Vec<_>>())
-            .allow_methods([axum::http::Method::GET, axum::http::Method::POST, axum::http::Method::PUT, axum::http::Method::DELETE])
-            .allow_headers([axum::http::header::AUTHORIZATION, axum::http::header::CONTENT_TYPE])
+            .allow_origin(
+                cors_origins
+                    .split(',')
+                    .map(|o| o.trim().parse::<axum::http::HeaderValue>().unwrap())
+                    .collect::<Vec<_>>(),
+            )
+            .allow_methods([
+                axum::http::Method::GET,
+                axum::http::Method::POST,
+                axum::http::Method::PUT,
+                axum::http::Method::DELETE,
+            ])
+            .allow_headers([
+                axum::http::header::AUTHORIZATION,
+                axum::http::header::CONTENT_TYPE,
+            ])
     };
 
     let static_dir = std::env::var("OQ_STATIC_DIR")

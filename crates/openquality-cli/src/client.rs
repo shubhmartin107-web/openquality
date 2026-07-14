@@ -37,10 +37,7 @@ impl Client {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
         let status = res.status();
-        let body: Value = res
-            .json()
-            .await
-            .unwrap_or_default();
+        let body: Value = res.json().await.unwrap_or_default();
         if !status.is_success() {
             let err = body
                 .get("error")

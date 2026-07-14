@@ -908,11 +908,15 @@ fn parse_expectation_type_str(s: &str) -> Option<ExpectationType> {
         "ColumnMinBetween" => Some(ExpectationType::ColumnMinBetween(0.0, 0.0)),
         "ColumnMaxBetween" => Some(ExpectationType::ColumnMaxBetween(0.0, 0.0)),
         "DistinctValuesEqualSet" => Some(ExpectationType::DistinctValuesEqualSet(vec![])),
-        "DistinctValuesContainedInSet" => Some(ExpectationType::DistinctValuesContainedInSet(vec![])),
+        "DistinctValuesContainedInSet" => {
+            Some(ExpectationType::DistinctValuesContainedInSet(vec![]))
+        }
         "ColumnValuesToBeInSet" => Some(ExpectationType::ColumnValuesToBeInSet(vec![])),
         "ColumnKLDivergenceLessThan" => Some(ExpectationType::ColumnKLDivergenceLessThan(0.0)),
         "ColumnQuantileBetween" => Some(ExpectationType::ColumnQuantileBetween(0.0, 0.0, 0.0)),
-        "TableColumnsMatchOrderedList" => Some(ExpectationType::TableColumnsMatchOrderedList(vec![])),
+        "TableColumnsMatchOrderedList" => {
+            Some(ExpectationType::TableColumnsMatchOrderedList(vec![]))
+        }
         _ => None,
     }
 }
