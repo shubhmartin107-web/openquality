@@ -1,0 +1,556 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "OpenQuality API",
+    "version": "0.2.0",
+    "description": "Enterprise data quality and observability platform API"
+  },
+  "servers": [
+    { "url": "http://localhost:8080", "description": "Local development" }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "operationId": "health",
+        "responses": {
+          "200": { "description": "Service healthy" }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "summary": "Register new user and workspace",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" },
+                  "name": { "type": "string" },
+                  "workspace_name": { "type": "string" }
+                },
+                "required": ["email", "password", "name", "workspace_name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Auth token and user info" }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "Login",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Auth token" }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "summary": "Refresh JWT token",
+        "operationId": "refreshToken",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "New token" }
+        }
+      }
+    },
+    "/api/v1/auth/api-keys": {
+      "get": {
+        "summary": "List API keys",
+        "operationId": "listApiKeys",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of API keys" }
+        }
+      },
+      "post": {
+        "summary": "Create API key",
+        "operationId": "createApiKey",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "label": { "type": "string" } },
+                "required": ["label"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Created API key" }
+        }
+      }
+    },
+    "/api/v1/auth/api-keys/{id}": {
+      "delete": {
+        "summary": "Revoke API key",
+        "operationId": "revokeApiKey",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Key revoked" }
+        }
+      }
+    },
+    "/api/v1/workspaces": {
+      "get": {
+        "summary": "List workspaces",
+        "operationId": "listWorkspaces",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Workspace list" }
+        }
+      },
+      "post": {
+        "summary": "Create workspace",
+        "operationId": "createWorkspace",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "slug": { "type": "string" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Created workspace" }
+        }
+      }
+    },
+    "/api/v1/workspaces/{id}": {
+      "get": {
+        "summary": "Get workspace",
+        "operationId": "getWorkspace",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Workspace details" }
+        }
+      }
+    },
+    "/api/v1/workspaces/{ws_id}/users": {
+      "get": {
+        "summary": "List workspace users",
+        "operationId": "listUsers",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ws_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "User list" }
+        }
+      },
+      "post": {
+        "summary": "Create user",
+        "operationId": "createUser",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ws_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "name": { "type": "string" },
+                  "role": { "type": "string", "enum": ["Owner","Admin","Editor","Member","Viewer"] }
+                },
+                "required": ["email", "name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Created user" }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "summary": "Get user",
+        "operationId": "getUser",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "User details" }
+        }
+      }
+    },
+    "/api/v1/workspaces/{ws_id}/data-sources": {
+      "get": {
+        "summary": "List data sources",
+        "operationId": "listDataSources",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ws_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Data source list" }
+        }
+      },
+      "post": {
+        "summary": "Create data source",
+        "operationId": "createDataSource",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ws_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Created data source" }
+        }
+      }
+    },
+    "/api/v1/data-sources/{id}": {
+      "get": {
+        "summary": "Get data source",
+        "operationId": "getDataSource",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Data source details" }
+        }
+      },
+      "delete": {
+        "summary": "Delete data source",
+        "operationId": "deleteDataSource",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Data source deleted" }
+        }
+      }
+    },
+    "/api/v1/workspaces/{ws_id}/suites": {
+      "get": {
+        "summary": "List expectation suites",
+        "operationId": "listSuites",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ws_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Suite list" }
+        }
+      },
+      "post": {
+        "summary": "Create expectation suite",
+        "operationId": "createSuite",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ws_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Created suite" }
+        }
+      }
+    },
+    "/api/v1/suites/{id}": {
+      "get": {
+        "summary": "Get expectation suite",
+        "operationId": "getSuite",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Suite details" }
+        }
+      },
+      "delete": {
+        "summary": "Delete expectation suite",
+        "operationId": "deleteSuite",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Suite deleted" }
+        }
+      }
+    },
+    "/api/v1/suites/{id}/run": {
+      "post": {
+        "summary": "Run expectation suite",
+        "operationId": "runSuite",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Suite run results" }
+        }
+      }
+    },
+    "/api/v1/suites/{id}/runs": {
+      "get": {
+        "summary": "List suite runs",
+        "operationId": "listSuiteRuns",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Recent suite runs" }
+        }
+      }
+    },
+    "/api/v1/suites/{id}/expectations": {
+      "get": {
+        "summary": "List expectations in suite",
+        "operationId": "listExpectations",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Expectation list" }
+        }
+      },
+      "post": {
+        "summary": "Add expectation to suite",
+        "operationId": "createExpectation",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Created expectation" }
+        }
+      }
+    },
+    "/api/v1/workspaces/{ws_id}/monitors": {
+      "get": {
+        "summary": "List monitors",
+        "operationId": "listMonitors",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ws_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Monitor list" }
+        }
+      },
+      "post": {
+        "summary": "Create monitor",
+        "operationId": "createMonitor",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ws_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Created monitor" }
+        }
+      }
+    },
+    "/api/v1/monitors/{id}": {
+      "get": {
+        "summary": "Get monitor",
+        "operationId": "getMonitor",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Monitor details" }
+        }
+      },
+      "put": {
+        "summary": "Update monitor",
+        "operationId": "updateMonitor",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Updated monitor" }
+        }
+      },
+      "delete": {
+        "summary": "Delete monitor",
+        "operationId": "deleteMonitor",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Monitor deleted" }
+        }
+      }
+    },
+    "/api/v1/monitors/{id}/run": {
+      "post": {
+        "summary": "Execute monitor",
+        "operationId": "runMonitor",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Monitor result" }
+        }
+      }
+    },
+    "/api/v1/monitors/{id}/history": {
+      "get": {
+        "summary": "Get monitor history",
+        "operationId": "getMonitorHistory",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 100 } }
+        ],
+        "responses": {
+          "200": { "description": "Monitor history" }
+        }
+      }
+    },
+    "/api/v1/incidents": {
+      "get": {
+        "summary": "List incidents",
+        "operationId": "listIncidents",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["open","resolved"] } },
+          { "name": "monitor_id", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Incident list" }
+        }
+      }
+    },
+    "/api/v1/incidents/{id}": {
+      "get": {
+        "summary": "Get incident",
+        "operationId": "getIncident",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Incident details" }
+        }
+      }
+    },
+    "/api/v1/incidents/{id}/resolve": {
+      "post": {
+        "summary": "Resolve incident",
+        "operationId": "resolveIncident",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Incident resolved" }
+        }
+      }
+    },
+    "/api/v1/incidents/{id}/acknowledge": {
+      "post": {
+        "summary": "Acknowledge incident",
+        "operationId": "acknowledgeIncident",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Incident acknowledged" }
+        }
+      }
+    },
+    "/api/v1/incidents/{id}/snooze": {
+      "post": {
+        "summary": "Snooze incident",
+        "operationId": "snoozeIncident",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Incident snoozed" }
+        }
+      }
+    },
+    "/api/v1/profile": {
+      "post": {
+        "summary": "Profile a table",
+        "operationId": "profileTable",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Column profiles" }
+        }
+      }
+    },
+    "/api/v1/suggest": {
+      "post": {
+        "summary": "Suggest expectations",
+        "operationId": "suggestExpectations",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Suggested expectations" }
+        }
+      }
+    },
+    "/api/v1/mcp/execute": {
+      "post": {
+        "summary": "Execute MCP tool",
+        "operationId": "executeMcp",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "MCP tool result" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

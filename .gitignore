@@ -1,0 +1,17 @@
+/target
+**/*.rs.bk
+*.pyc
+__pycache__/
+*.egg-info/
+.venv/
+venv/
+.idea/
+*.swp
+*.swo
+*~
+benchmarks/results/*.json
+web/dist/
+node_modules/
+.env
+*.so
+*.dylib

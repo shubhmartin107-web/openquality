@@ -1,0 +1,18 @@
+[package]
+name = "openquality-scheduler"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+openquality-core = { path = "../openquality-core" }
+openquality-store = { path = "../openquality-store" }
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+async-trait.workspace = true
+cron.workspace = true

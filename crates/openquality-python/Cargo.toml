@@ -1,0 +1,14 @@
+[package]
+name = "openquality-python"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+openquality-core = { path = "../openquality-core" }
+pyo3 = "0.23"
+serde_json.workspace = true

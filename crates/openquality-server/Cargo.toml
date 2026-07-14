@@ -1,0 +1,27 @@
+[package]
+name = "openquality-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+openquality-core = { path = "../openquality-core" }
+openquality-mcp = { path = "../openquality-mcp" }
+openquality-auth = { path = "../openquality-auth" }
+openquality-store = { path = "../openquality-store" }
+openquality-scheduler = { path = "../openquality-scheduler" }
+openquality-integrations = { path = "../openquality-integrations" }
+tokio.workspace = true
+axum.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+clap.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+parking_lot.workspace = true
+polars.workspace = true
